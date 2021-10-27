@@ -11,7 +11,7 @@ class GeneralLedger(Document):
 	def validate(self):
 		# NOTE: this method is also called when calling insert() on get_doc()
 
-		self.difference = float(self.debit_amt) - float(self.credit_amt)
+		self.difference = flt(self.debit_amt) - flt(self.credit_amt)
 
 		# checking the posting date
 		if getdate(self.posting_date) > getdate():

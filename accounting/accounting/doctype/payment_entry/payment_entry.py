@@ -18,7 +18,12 @@ class PaymentEntry(Document):
 
 
 	def validate(self):
-		pass
+		if self.payment_type == "Recieve":
+			if self.party_type != "Customer":
+				frappe.throw("Can only recieve from Customer!")
+		else:
+			if self.party_type != "Supplier":
+				frappe.throw("Can only pay to Supplier!")
 
 
 	def on_submit(self):

@@ -10,7 +10,7 @@ def execute(filters=None):
 
 
 def get_colms():
-	# account, total_credit_amt, total_debit_amt
+	# fields: account, total_credit_amt, total_debit_amt
 	return [
 		{
 			'fieldname': 'name',
@@ -33,9 +33,14 @@ def get_colms():
 
 def get_data():
 	# TODO: need to add case for mid parent under mid parent account
+	# this is a very bad/naive implementation - figure out a better way
 
 	root_accounts = frappe.get_list("Account", filters={"parent_account": ""})
-	mid_parent_accounts = frappe.get_list("Account", fields=["name", "parent_account"], filters={"parent_account": ["!=", ""], "is_group": 1})
+	mid_parent_accounts = frappe.get_list(
+		"Account",
+		fields=["name", "parent_account"],
+		filters={"parent_account": ["!=", ""], "is_group": 1}
+	)
 	child_accounts = frappe.get_list("Account", fields=["name", "parent_account"], filters={"is_group": 0})
 
 	accounts = deque()
@@ -67,6 +72,9 @@ def get_data():
 						accounts.appendleft(c)
 
 				accounts.appendleft(m)
+
+			else:
+				pass
 
 		for dc in child_accounts:
 			# when child is directly associated with root

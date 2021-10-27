@@ -35,31 +35,36 @@
    "fieldname": "payment_type",
    "fieldtype": "Select",
    "label": "Payment Type",
-   "options": "Receive\nPay"
+   "options": "Receive\nPay",
+   "reqd": 1
   },
   {
    "fieldname": "party_type",
    "fieldtype": "Select",
    "label": "Party Type",
-   "options": "Customer\nSupplier"
+   "options": "Customer\nSupplier",
+   "reqd": 1
   },
   {
    "fieldname": "party",
    "fieldtype": "Link",
    "label": "Party",
-   "options": "Party"
+   "options": "Party",
+   "reqd": 1
   },
   {
    "fieldname": "paid_from",
    "fieldtype": "Link",
    "label": "Paid From",
-   "options": "Account"
+   "options": "Account",
+   "reqd": 1
   },
   {
    "fieldname": "paid_to",
    "fieldtype": "Link",
    "label": "Paid To",
-   "options": "Account"
+   "options": "Account",
+   "reqd": 1
   },
   {
    "fieldname": "amount",
@@ -79,7 +84,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2021-10-27 00:12:39.085144",
+ "modified": "2021-10-27 14:00:27.044695",
  "modified_by": "Administrator",
  "module": "Accounting",
  "name": "Payment Entry",

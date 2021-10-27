@@ -46,7 +46,10 @@ def make_sales_invoice(item_dict: str, customer_name: str):
 	if not customer_name:
 		frappe.throw("Customer Name is required!")
 
-	customer_name = customer_name.strip()
+	customer_name = customer_name.strip().lower()
+	posting_date = getdate().strftime("%Y-%m-%d")
+
+	recievable, income = get_sales_invoice_accounts()
 
 	# checking if a customer exists or not
 	if not frappe.db.exists("Party", customer_name):
@@ -62,9 +65,9 @@ def make_sales_invoice(item_dict: str, customer_name: str):
 	from json import loads
 	item_dict = loads(item_dict)
 
-	list_items = []
+	list_of_items = []
 	for k,v in item_dict.items():
-		list_items.append({
+		list_of_items.append({
 			"item": k,
 			"quantity": v
 		})
@@ -72,12 +75,33 @@ def make_sales_invoice(item_dict: str, customer_name: str):
 	frappe.get_doc({
 		"doctype": "Sales Invoice",
 		"customer": customer_name,
-		"debit_to": "recievable child 1",
-		"income_account": "income child 1",
-		"fiscal_year": "2021-2022",
-		"items": list_items
+		"debit_to": recievable,
+		"income_account": income,
+		"posting_date": posting_date,
+		"fiscal_year": get_fiscal_year_from_posting_date(posting_date),
+		"items": list_of_items
 	}).insert(ignore_permissions=True).submit()
 
 
 def get_fiscal_year_from_posting_date(posting_date):
-	pass
+	fiscal_yr = frappe.get_all("Fiscal Year", filters={
+			"end_date": [">=", posting_date], "start_date": ["<", posting_date]
+		}
+	)
+	# generally we wont get multiple hits but if we do we can just take the first one
+	return fiscal_yr[0]["name"]
+
+def get_sales_invoice_accounts():
+	recievable_account = frappe.get_all("Account", filters={
+		"parent_account": "Recievable", "is_group": 0
+	})
+	income_account = frappe.get_all("Account", filters={
+		"parent_account": "Income", "is_group": 0
+	})
+
+	if not recievable_account or not income_account:
+		frappe.throw("Please add a Recievable(Asset)/Income (child) account in the account tree!")
+
+	# take any child and use it for the sales invoice - this is not a good idea
+	# to use generally but in this case it works :P
+	return recievable_account[0]["name"], income_account[0]["name"]
