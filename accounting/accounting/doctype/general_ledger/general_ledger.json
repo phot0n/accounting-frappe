@@ -1,0 +1,119 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:gl-entry-{fiscal_year}-{#####}",
+ "creation": "2021-09-29 22:37:56.943132",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "fiscal_year",
+  "posting_date",
+  "account",
+  "party_type",
+  "party",
+  "debit_amt",
+  "credit_amt",
+  "voucher_type",
+  "voucher",
+  "difference"
+ ],
+ "fields": [
+  {
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Posting Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "party_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Party Type",
+   "options": "Customer\nSupplier",
+   "reqd": 1
+  },
+  {
+   "fieldname": "party",
+   "fieldtype": "Link",
+   "label": "Party",
+   "options": "Party",
+   "reqd": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "debit_amt",
+   "fieldtype": "Currency",
+   "label": "Debit Amt",
+   "reqd": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "credit_amt",
+   "fieldtype": "Currency",
+   "label": "Credit Amt",
+   "reqd": 1
+  },
+  {
+   "fieldname": "fiscal_year",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Fiscal Year",
+   "options": "Fiscal Year",
+   "reqd": 1
+  },
+  {
+   "fieldname": "account",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Account",
+   "options": "Account",
+   "reqd": 1
+  },
+  {
+   "fieldname": "voucher_type",
+   "fieldtype": "Select",
+   "label": "Voucher Type",
+   "options": "Sales Invoice\nPurchase Invoice\nPayment Entry",
+   "reqd": 1
+  },
+  {
+   "fieldname": "voucher",
+   "fieldtype": "Data",
+   "label": "Voucher",
+   "reqd": 1
+  },
+  {
+   "fieldname": "difference",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Difference (d-c)"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2021-10-26 19:24:09.069582",
+ "modified_by": "Administrator",
+ "module": "Accounting",
+ "name": "General Ledger",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC"
+}
