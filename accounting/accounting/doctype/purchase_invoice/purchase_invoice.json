@@ -8,13 +8,17 @@
  "engine": "InnoDB",
  "field_order": [
   "supplier",
+  "fiscal_year",
+  "column_break_3",
   "posting_date",
   "payment_due_date",
+  "accounts_section",
   "credit_to",
   "expense_account",
-  "fiscal_year",
+  "section_break_9",
   "items",
   "total_amount",
+  "section_break_12",
   "amended_from"
  ],
  "fields": [
@@ -78,12 +82,29 @@
    "options": "Purchase Invoice",
    "print_hide": 1,
    "read_only": 1
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "accounts_section",
+   "fieldtype": "Section Break",
+   "label": "Accounts"
+  },
+  {
+   "fieldname": "section_break_9",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "section_break_12",
+   "fieldtype": "Section Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2021-09-28 12:55:47.964217",
+ "modified": "2021-10-28 20:36:01.089488",
  "modified_by": "Administrator",
  "module": "Accounting",
  "name": "Purchase Invoice",

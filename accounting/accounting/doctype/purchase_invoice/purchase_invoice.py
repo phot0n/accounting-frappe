@@ -5,19 +5,28 @@ import frappe
 from frappe.model.document import Document
 from frappe.utils.data import flt
 from frappe.utils import getdate
-from accounting.accounting.doctype.general_ledger.general_ledger import gl_entry
+
+from accounting.accounting.doctype.gl_entry.gl_entry import make_gl_entry
+from datetime import timedelta
 
 
 class PurchaseInvoice(Document):
 	def before_save(self):
-		# checking/setting posting date
-		if not self.posting_date:
-			self.posting_date = getdate().strftime("%Y-%m-%d")
-		else:
-			if getdate(self.posting_date) > getdate():
-				frappe.throw("Posting Date cannot be of future!")
+		todays_date = getdate()
 
-		# setting the total amount as well as individual amts of the items
+		# check posting date
+		if getdate(self.posting_date) > todays_date:
+			frappe.throw("Posting Date cannot be of future!")
+
+		# check payment due date
+		if not self.payment_due_date:
+			# default is after 10 days
+			self.payment_due_date = (getdate(self.posting_date) + timedelta(days=10)).strftime("%Y-%m-%d")
+		else:
+			if getdate(self.payment_due_date) < todays_date:
+				frappe.throw("Payment Due Date cannot be of past!")
+
+		# set the total amount as well as individual amts of the items
 		self.total_amount = 0
 		for i in self.items:
 			i.amount = flt(i.quantity) * i.rate
@@ -25,7 +34,7 @@ class PurchaseInvoice(Document):
 
 
 	def on_submit(self):
-		gl_entry(
+		make_gl_entry(
 			fiscal_year=self.fiscal_year,
 			posting_date=self.posting_date,
 			debit_acc=self.expense_account,
@@ -40,4 +49,4 @@ class PurchaseInvoice(Document):
 
 	def on_cancel(self):
 		from re import sub
-		gl_entry(delete=True, voucher=sub("(-CANC-)\d+", "", self.name))
+		make_gl_entry(delete=True, voucher=sub("(-CANC-)\d+", "", self.name))

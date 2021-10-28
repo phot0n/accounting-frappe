@@ -3,27 +3,39 @@
 
 import frappe
 from frappe.model.document import Document
-from accounting.accounting.doctype.general_ledger.general_ledger import gl_entry
 from frappe.utils.data import flt
 from frappe.utils import getdate
+
+from accounting.accounting.doctype.gl_entry.gl_entry import make_gl_entry
+from datetime import timedelta
 
 
 class SalesInvoice(Document):
 	def before_save(self):
-		if not self.posting_date:
-			self.posting_date = getdate().strftime("%Y-%m-%d")
-		else:
-			if getdate(self.posting_date) > getdate():
-				frappe.throw("Posting Date cannot be of future!")
+		todays_date = getdate()
 
-		self.total_amount = 0
+		# check posting date
+		if getdate(self.posting_date) > todays_date:
+			frappe.throw("Posting Date cannot be of future!")
+
+		# check payment due date
+		if not self.payment_due_date:
+			# default is after 10 days
+			self.payment_due_date = (getdate(self.posting_date) + timedelta(days=10)).strftime("%Y-%m-%d")
+		else:
+			if getdate(self.payment_due_date) < todays_date:
+				frappe.throw("Payment Due Date cannot be of past!")
+
+		# set individual and total amounts of items
+		self.total_amount = flt(0)
 		for i in self.items:
 			i.amount = flt(i.quantity) * i.rate
 			self.total_amount += i.amount
 
+
 	def on_submit(self):
 		# make gl entries
-		gl_entry(
+		make_gl_entry(
 			fiscal_year=self.fiscal_year,
 			posting_date=self.posting_date,
 			debit_acc=self.debit_to,
@@ -35,10 +47,11 @@ class SalesInvoice(Document):
 			voucher=self.name
 		)
 
+
 	def on_cancel(self):
 		# reverse/delete gl entries
 		from re import sub
-		gl_entry(delete=True, voucher=sub(r"(-CANC-)\d+", "", self.name))
+		make_gl_entry(delete=True, voucher=sub(r"(-CANC-)\d+", "", self.name))
 
 
 @frappe.whitelist()
@@ -56,7 +69,7 @@ def make_sales_invoice(item_dict: str, customer_name: str):
 		# creating the customer
 		frappe.get_doc({
 			"doctype": "Party",
-			"party_type": "customer",
+			"party_type": "Customer",
 			"party_name": customer_name,
 		}).insert(ignore_permissions=True)
 
@@ -88,8 +101,12 @@ def get_fiscal_year_from_posting_date(posting_date):
 			"end_date": [">=", posting_date], "start_date": ["<", posting_date]
 		}
 	)
-	# generally we wont get multiple hits but if we do we can just take the first one
+	if not fiscal_yr:
+		frappe.throw("A fiscal Year for this financial year does not exist yet!")
+
+	# NOTE: generally we won't get multiple hits but if we do we can just take the first one
 	return fiscal_yr[0]["name"]
+
 
 def get_sales_invoice_accounts():
 	recievable_account = frappe.get_all("Account", filters={
@@ -100,8 +117,8 @@ def get_sales_invoice_accounts():
 	})
 
 	if not recievable_account or not income_account:
-		frappe.throw("Please add a Recievable(Asset)/Income (child) account in the account tree!")
+		frappe.throw("Currently no Recievable(Asset)/Income child account(s) exist in the account tree!")
 
-	# take any child and use it for the sales invoice - this is not a good idea
+	# NOTE: take any child and use it for the sales invoice - this is not a good idea
 	# to use generally but in this case it works :P
 	return recievable_account[0]["name"], income_account[0]["name"]

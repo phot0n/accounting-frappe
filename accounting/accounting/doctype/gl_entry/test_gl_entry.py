@@ -4,5 +4,5 @@
 # import frappe
 import unittest
 
-class TestGeneralLedger(unittest.TestCase):
+class TestGLEntry(unittest.TestCase):
 	pass

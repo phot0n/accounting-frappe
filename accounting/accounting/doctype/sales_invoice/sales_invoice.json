@@ -8,12 +8,17 @@
  "engine": "InnoDB",
  "field_order": [
   "customer",
+  "fiscal_year",
+  "column_break_3",
   "posting_date",
   "payment_due_date",
+  "accounts_section",
   "debit_to",
   "income_account",
-  "fiscal_year",
+  "section_break_9",
   "items",
+  "total_amount",
+  "section_break_12",
   "amended_from"
  ],
  "fields": [
@@ -27,7 +32,8 @@
   {
    "fieldname": "posting_date",
    "fieldtype": "Date",
-   "label": "Posting Date"
+   "label": "Posting Date",
+   "reqd": 1
   },
   {
    "fieldname": "payment_due_date",
@@ -71,12 +77,35 @@
    "label": "Items",
    "options": "Invoice Item",
    "reqd": 1
+  },
+  {
+   "fieldname": "total_amount",
+   "fieldtype": "Currency",
+   "label": "Total Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "accounts_section",
+   "fieldtype": "Section Break",
+   "label": "Accounts"
+  },
+  {
+   "fieldname": "section_break_9",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "section_break_12",
+   "fieldtype": "Section Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2021-09-29 23:24:36.091258",
+ "modified": "2021-10-28 20:15:50.691443",
  "modified_by": "Administrator",
  "module": "Accounting",
  "name": "Sales Invoice",

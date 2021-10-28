@@ -9,6 +9,7 @@
  "field_order": [
   "party_type",
   "party_name",
+  "column_break_3",
   "email_id",
   "mobile_number"
  ],
@@ -18,7 +19,7 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Party Type",
-   "options": "customer\nsupplier",
+   "options": "Customer\nSupplier",
    "reqd": 1
   },
   {
@@ -38,12 +39,17 @@
   {
    "fieldname": "mobile_number",
    "fieldtype": "Data",
-   "label": "Mobile Number"
+   "label": "Mobile Number",
+   "options": "Phone"
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2021-10-25 20:38:14.763141",
+ "modified": "2021-10-28 19:55:25.226729",
  "modified_by": "Administrator",
  "module": "Accounting",
  "name": "Party",

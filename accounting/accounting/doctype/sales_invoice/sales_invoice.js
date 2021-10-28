@@ -6,17 +6,19 @@ frappe.ui.form.on("Sales Invoice", {
 		// ref: https://frappeframework.com/docs/user/en/guides/app-development/overriding-link-query-by-custom-script
 		frm.set_query("customer", {
 			"filters": [
-				["Party", "party_type", "=", "customer"],
+				["Party", "party_type", "=", "Customer"],
 			]
 		});
 		frm.set_query("income_account", {
 			"filters": [
 				["Account", "parent_account", "=", "Income"],
+				["Account", "is_group", "=", "0"],
 			]
 		});
 		frm.set_query("debit_to", {
 			"filters": [
 				["Account", "parent_account", "=", "Recievable"],
+				["Account", "is_group", "=", "0"],
 			]
 		});
 	},
@@ -30,12 +32,13 @@ frappe.ui.form.on("Sales Invoice", {
 					payment_type: "Receive",
 					fiscal_year: frm.doc.fiscal_year,
 					paid_from: frm.doc.debit_to,
-					paid_to: "Bank child 1"
+					voucher_type: "Sales Invoice",
+					voucher: frm.doc.name
 				});
 			});
-			frm.add_custom_button("View GL Entry", () => {
+			frm.add_custom_button("View GL Entries", () => {
 				// view the gl entry
-				frappe.set_route("List", "General Ledger", {"voucher": frm.doc.name});
+				frappe.set_route("List", "GL Entry", {"voucher": frm.doc.name});
 			});
 		}
 	},

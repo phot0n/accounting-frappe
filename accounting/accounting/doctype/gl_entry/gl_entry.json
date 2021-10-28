@@ -9,11 +9,14 @@
  "field_order": [
   "fiscal_year",
   "posting_date",
-  "account",
+  "column_break_3",
   "party_type",
   "party",
+  "section_break_6",
+  "account",
   "debit_amt",
   "credit_amt",
+  "section_break_10",
   "voucher_type",
   "voucher",
   "difference"
@@ -89,14 +92,26 @@
    "fieldtype": "Data",
    "hidden": 1,
    "label": "Difference (d-c)"
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_6",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "section_break_10",
+   "fieldtype": "Section Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2021-10-26 19:24:09.069582",
+ "modified": "2021-10-28 23:54:01.101474",
  "modified_by": "Administrator",
  "module": "Accounting",
- "name": "General Ledger",
+ "name": "GL Entry",
  "naming_rule": "Expression",
  "owner": "Administrator",
  "permissions": [
@@ -113,7 +128,6 @@
    "write": 1
   }
  ],
- "quick_entry": 1,
  "sort_field": "modified",
  "sort_order": "DESC"
 }

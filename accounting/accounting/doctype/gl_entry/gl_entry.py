@@ -7,10 +7,9 @@ from frappe.utils.data import flt
 from frappe.utils import getdate
 
 
-class GeneralLedger(Document):
+class GLEntry(Document):
 	def validate(self):
-		# NOTE: this method is also called when calling insert() on get_doc()
-
+		# set difference (hidden)
 		self.difference = flt(self.debit_amt) - flt(self.credit_amt)
 
 		# checking the posting date
@@ -19,7 +18,7 @@ class GeneralLedger(Document):
 
 
 # needs the document params to be passed
-def gl_entry(delete=False, **kwargs):
+def make_gl_entry(delete=False, **kwargs):
 	'''
 	acceptable kwargs:
 		- voucher
@@ -37,7 +36,7 @@ def gl_entry(delete=False, **kwargs):
 		if kwargs.get("voucher"):
 			print(kwargs.get('voucher'))
 			frappe.db.sql(
-				f"DELETE FROM `tabGeneral Ledger` WHERE voucher = \"{kwargs.get('voucher')}\""
+				f"DELETE FROM `tabGL Entry` WHERE voucher = \"{kwargs.get('voucher')}\""
 			)
 			return
 		else:
@@ -51,7 +50,7 @@ def gl_entry(delete=False, **kwargs):
 		frappe.throw("Not enough args for making gl entry!")
 
 	frappe.get_doc({
-		"doctype": "General Ledger",
+		"doctype": "GL Entry",
 		"fiscal_year": kwargs.get("fiscal_year"),
 		"posting_date": kwargs.get("posting_date"),
 		"account": kwargs.get("debit_acc"),
@@ -63,7 +62,7 @@ def gl_entry(delete=False, **kwargs):
 	}).insert(ignore_permissions=True)
 
 	frappe.get_doc({
-		"doctype": "General Ledger",
+		"doctype": "GL Entry",
 		"fiscal_year": kwargs.get("fiscal_year"),
 		"posting_date": kwargs.get("posting_date"),
 		"account": kwargs.get("credit_acc"),

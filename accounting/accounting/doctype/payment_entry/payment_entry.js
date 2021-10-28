@@ -3,19 +3,7 @@
 
 frappe.ui.form.on('Payment Entry', {
 	onload(frm) {
-		frm.set_query("paid_to", {
-			"filters": [
-				["Account", "is_group", "=", "0"],
-				// add filters for not showing income/expense accounts
-				["Account", "parent_account", "not in", ["Income", "Expense"]],
-			]
-		});
-		frm.set_query("paid_from", {
-			"filters": [
-				["Account", "is_group", "=", "0"],
-				["Account", "parent_account", "not in", ["Income", "Expense"]],
-			]
-		});
+		frm.trigger("payment_type");
 	},
 	refresh(frm) {
 		if (frm.doc.docstatus === 1) {
@@ -25,4 +13,26 @@ frappe.ui.form.on('Payment Entry', {
 			});
 		}
 	},
+	payment_type(frm) {
+		let bank_acc = "paid_from";
+		let other_acc = "paid_to";
+
+		if (frm.doc.payment_type === "Receive") {
+			bank_acc = "paid_to";
+			other_acc = "paid_from";
+		}
+
+		frm.set_query(bank_acc, {
+			"filters": [
+				["Account", "is_group", "=", "0"],
+				["Account", "parent_account", "=", "Bank"],
+			]
+		});
+		frm.set_query(other_acc, {
+			"filters": [
+				["Account", "is_group", "=", "0"],
+				["Account", "parent_account", "not in", ["Income", "Expense"]],
+			]
+		});
+	}
 });

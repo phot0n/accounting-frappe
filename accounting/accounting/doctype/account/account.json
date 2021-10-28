@@ -11,29 +11,35 @@
   "account_name",
   "account_type",
   "opening_balance",
+  "column_break_7",
   "lft",
   "rgt",
-  "is_group",
   "old_parent",
-  "parent_account"
+  "parent_account",
+  "is_group"
  ],
  "fields": [
   {
    "fieldname": "account_number",
    "fieldtype": "Data",
-   "label": "Account Number"
+   "in_list_view": 1,
+   "label": "Account Number",
+   "reqd": 1
   },
   {
    "fieldname": "account_name",
    "fieldtype": "Data",
+   "in_list_view": 1,
    "label": "Account Name",
+   "reqd": 1,
    "unique": 1
   },
   {
    "fieldname": "account_type",
    "fieldtype": "Select",
    "label": "Account Type",
-   "options": "Asset\nLiability\nIncome\nExpense"
+   "options": "Asset\nLiability\nIncome\nExpense",
+   "reqd": 1
   },
   {
    "default": "0",
@@ -50,7 +56,7 @@
   {
    "default": "0",
    "fieldname": "opening_balance",
-   "fieldtype": "Data",
+   "fieldtype": "Currency",
    "label": "Opening Balance",
    "set_only_once": 1
   },
@@ -87,12 +93,16 @@
    "fieldtype": "Link",
    "label": "Parent Account",
    "options": "Account"
+  },
+  {
+   "fieldname": "column_break_7",
+   "fieldtype": "Column Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_tree": 1,
  "links": [],
- "modified": "2021-10-12 21:56:17.435202",
+ "modified": "2021-10-28 23:26:13.224222",
  "modified_by": "Administrator",
  "module": "Accounting",
  "name": "Account",
@@ -113,6 +123,7 @@
    "write": 1
   }
  ],
+ "quick_entry": 1,
  "sort_field": "modified",
  "sort_order": "DESC",
  "track_changes": 1

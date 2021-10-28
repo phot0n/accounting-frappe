@@ -5,7 +5,7 @@
    "fieldname": "name",
    "fieldtype": "Link",
    "label": "GL Entry",
-   "options": "General Ledger",
+   "options": "GL Entry",
    "width": 0
   },
   {
@@ -91,14 +91,14 @@
  "idx": 0,
  "is_standard": "Yes",
  "json": "{}",
- "modified": "2021-10-26 19:38:24.768645",
+ "modified": "2021-10-28 23:40:53.032238",
  "modified_by": "Administrator",
  "module": "Accounting",
  "name": "GL Report",
  "owner": "Administrator",
  "prepared_report": 0,
- "query": "select \n    name, posting_date, account, party_type, party, debit_amt, credit_amt, fiscal_year, voucher_type, voucher, difference\nfrom `tabGeneral Ledger`;",
- "ref_doctype": "General Ledger",
+ "query": "select \n    name, posting_date, account, party_type, party, debit_amt, credit_amt, fiscal_year, voucher_type, voucher, difference\nfrom `tabGL Entry`;",
+ "ref_doctype": "GL Entry",
  "report_name": "GL Report",
  "report_type": "Query Report",
  "roles": [

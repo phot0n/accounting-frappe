@@ -2,7 +2,7 @@ let cart = window.sessionStorage;
 let sessionStorageProps = ["length", "clear", "getItem", "key", "removeItem", "setItem"];
 
 let add_to_cart_btns = document.querySelectorAll("button.btn-outline-dark");
-// ref: https://stackoverflow.com/a/750506
+// reason for using foreach: https://stackoverflow.com/a/750506
 add_to_cart_btns.forEach((btn) => {
     btn.addEventListener("click", () => {
         cart.setItem(
@@ -72,8 +72,6 @@ function make_sale() {
 
                 clear_cart();
             }
-
-            console.log(r);
         },
     });
 }

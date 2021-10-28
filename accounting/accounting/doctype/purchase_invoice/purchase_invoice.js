@@ -5,17 +5,19 @@ frappe.ui.form.on("Purchase Invoice", {
 	onload(frm) {
 		frm.set_query("supplier", {
 			"filters": [
-				["Party", "party_type", "=", "supplier"],
+				["Party", "party_type", "=", "Supplier"],
 			]
 		});
 		frm.set_query("expense_account", {
 			"filters": [
 				["Account", "parent_account", "=", "Expense"],
+				["Account", "is_group", "=", "0"],
 			]
 		});
 		frm.set_query("credit_to", {
 			"filters": [
 				["Account", "parent_account", "=", "Payable"],
+				["Account", "is_group", "=", "0"],
 			]
 		});
 	},
@@ -29,12 +31,13 @@ frappe.ui.form.on("Purchase Invoice", {
 					payment_type: "Pay",
 					fiscal_year: frm.doc.fiscal_year,
 					paid_to: frm.doc.credit_to,
-					paid_from: "Bank child 1"
+					voucher_type: "Purchase Invoice",
+					voucher: frm.doc.name
 				});
 			});
-			frm.add_custom_button("View GL Entry", () => {
+			frm.add_custom_button("View GL Entries", () => {
 				// view the gl entry
-				frappe.set_route("List", "General Ledger", {"voucher": frm.doc.name});
+				frappe.set_route("List", "GL Entry", {"voucher": frm.doc.name});
 			});
 		}
 	},

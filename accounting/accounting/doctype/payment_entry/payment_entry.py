@@ -3,22 +3,20 @@
 
 import frappe
 from frappe.model.document import Document
-from accounting.accounting.doctype.general_ledger.general_ledger import gl_entry
 from frappe.utils import getdate
+
+from accounting.accounting.doctype.gl_entry.gl_entry import make_gl_entry
 
 
 class PaymentEntry(Document):
 	def before_save(self):
-		# checking/setting posting date
-		if not self.posting_date:
-			self.posting_date = getdate().strftime("%Y-%m-%d")
-		else:
-			if getdate(self.posting_date) > getdate():
-				frappe.throw("Posting Date cannot be of future!")
+		# checking posting date
+		if getdate(self.posting_date) > getdate():
+			frappe.throw("Posting Date cannot be of future!")
 
 
 	def validate(self):
-		if self.payment_type == "Recieve":
+		if self.payment_type == "Receive":
 			if self.party_type != "Customer":
 				frappe.throw("Can only recieve from Customer!")
 		else:
@@ -28,7 +26,7 @@ class PaymentEntry(Document):
 
 	def on_submit(self):
 		# make gl entries
-		gl_entry(
+		make_gl_entry(
 			fiscal_year=self.fiscal_year,
 			posting_date=self.posting_date,
 			debit_acc=self.paid_to,
@@ -40,9 +38,12 @@ class PaymentEntry(Document):
 			voucher=self.name
 		)
 
+		# TODO: change the status of sales/purchase invoice
+
 
 	def on_cancel(self):
 		# delete gl entries
 		from re import sub
-		gl_entry(delete=True, voucher=sub(r"(-CANC-)\d+", "", self.name))
+		make_gl_entry(delete=True, voucher=sub(r"(-CANC-)\d+", "", self.name))
 
+		# TODO: cancel the linked sales/purchase invoice

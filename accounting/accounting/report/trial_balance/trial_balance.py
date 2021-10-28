@@ -16,7 +16,8 @@ def get_colms():
 			'fieldname': 'name',
             'label': 'Account',
             'fieldtype': 'Link',
-            'options': 'Account'
+            'options': 'Account',
+			"width": 200
         },
         {
             'fieldname': 'credit_amt',
@@ -32,8 +33,7 @@ def get_colms():
 
 
 def get_data():
-	# TODO: need to add case for mid parent under mid parent account
-	# this is a very bad/naive implementation - figure out a better way
+	# FIXME: this is a bad/naive implementation - figure out a better way
 
 	root_accounts = frappe.get_list("Account", filters={"parent_account": ""})
 	mid_parent_accounts = frappe.get_list(
@@ -58,7 +58,7 @@ def get_data():
 						c["indent"] = 2
 						c["debit_amt"] = c["credit_amt"] = 0
 
-						gl_entries = frappe.get_list("General Ledger", filters={"account": c["name"]}, fields=["debit_amt", "credit_amt"])
+						gl_entries = frappe.get_list("GL Entry", filters={"account": c["name"]}, fields=["debit_amt", "credit_amt"])
 						for entry in gl_entries:
 							c["debit_amt"] += entry["debit_amt"]
 							c["credit_amt"] += entry["credit_amt"]
@@ -74,6 +74,7 @@ def get_data():
 				accounts.appendleft(m)
 
 			else:
+				# TODO: need to add case for mid parent under mid parent account
 				pass
 
 		for dc in child_accounts:
@@ -82,7 +83,7 @@ def get_data():
 				dc["indent"] = 1
 				dc["debit_amt"] = dc["credit_amt"] = 0
 
-				gl_entries = frappe.get_list("General Ledger", filters={"account": dc["name"]}, fields=["debit_amt", "credit_amt"])
+				gl_entries = frappe.get_list("GL Entry", filters={"account": dc["name"]}, fields=["debit_amt", "credit_amt"])
 				for entry in gl_entries:
 					dc["debit_amt"] += entry["debit_amt"]
 					dc["credit_amt"] += entry["credit_amt"]

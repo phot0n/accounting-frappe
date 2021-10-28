@@ -10,11 +10,16 @@
   "fiscal_year",
   "posting_date",
   "payment_type",
+  "column_break_4",
   "party_type",
   "party",
+  "accounts_section",
   "paid_from",
   "paid_to",
   "amount",
+  "section_break_11",
+  "voucher_type",
+  "voucher",
   "amended_from"
  ],
  "fields": [
@@ -29,7 +34,8 @@
   {
    "fieldname": "posting_date",
    "fieldtype": "Date",
-   "label": "Posting Date"
+   "label": "Posting Date",
+   "reqd": 1
   },
   {
    "fieldname": "payment_type",
@@ -79,12 +85,37 @@
    "options": "Payment Entry",
    "print_hide": 1,
    "read_only": 1
+  },
+  {
+   "fieldname": "column_break_4",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "accounts_section",
+   "fieldtype": "Section Break",
+   "label": "Accounts"
+  },
+  {
+   "fieldname": "section_break_11",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "voucher_type",
+   "fieldtype": "Data",
+   "label": "Voucher Type",
+   "read_only": 1
+  },
+  {
+   "fieldname": "voucher",
+   "fieldtype": "Data",
+   "label": "Voucher",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2021-10-27 14:00:27.044695",
+ "modified": "2021-10-29 11:08:05.631110",
  "modified_by": "Administrator",
  "module": "Accounting",
  "name": "Payment Entry",

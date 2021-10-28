@@ -9,11 +9,12 @@
  "field_order": [
   "item_code",
   "item_name",
+  "show_in_website",
+  "column_break_3",
   "selling_rate",
   "default_unit",
-  "image",
-  "route",
-  "description"
+  "section_break_7",
+  "route"
  ],
  "fields": [
   {
@@ -42,12 +43,8 @@
    "default": "unit",
    "fieldname": "default_unit",
    "fieldtype": "Data",
-   "label": "Default Unit of Measurement"
-  },
-  {
-   "fieldname": "image",
-   "fieldtype": "Attach Image",
-   "label": "Image"
+   "label": "Default Unit of Measurement",
+   "reqd": 1
   },
   {
    "fieldname": "route",
@@ -55,16 +52,24 @@
    "label": "Route"
   },
   {
-   "fieldname": "description",
-   "fieldtype": "Text Editor",
-   "label": "Description"
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "show_in_website",
+   "fieldtype": "Check",
+   "label": "Show in Website"
+  },
+  {
+   "fieldname": "section_break_7",
+   "fieldtype": "Section Break"
   }
  ],
  "has_web_view": 1,
- "image_field": "image",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2021-10-17 14:48:49.460419",
+ "modified": "2021-10-28 23:19:10.837670",
  "modified_by": "Administrator",
  "module": "Accounting",
  "name": "Item",

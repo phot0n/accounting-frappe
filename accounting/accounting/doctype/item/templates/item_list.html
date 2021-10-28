@@ -7,35 +7,43 @@
 	<button class="btn btn-dark float-right">Show Cart</button>
 	<br>
 
-	{% set items = frappe.get_list("Item", fields=['name', 'item_name', 'selling_rate']) %}
-	<h2>Items</h2>
+	{% set items = frappe.get_list("Item", fields=['name', 'item_name', 'selling_rate'], filters={'show_in_website': 1}) %}
+	<h2>Shop</h2>
 	<br>
 	<div class="container">
+		{% if items %}
 
-		<div class="row">
-			<div class="col-3 font-weight-bold">Item</div>
-			<div class="col-3 font-weight-bold">Name</div>
-			<div class="col-3 font-weight-bold">Selling Price</div>
-		</div>
-
-		<br>
-
-		{% for i in items %}
 			<div class="row">
-				<div class="col-3">
-					{{ i.name }}
-				</div>
-				<div class="col-3">
-					{{ i.item_name }}
-				</div>
-				<div class="col-3">
-					{{ i.selling_rate }}
-				</div>
-				<div class="col-3">
-					<button item-code={{ i.name }} class="btn btn-outline-dark">Add To Cart</button>
-				</div>
+				<div class="col-3 font-weight-bold">Item</div>
+				<div class="col-3 font-weight-bold">Name</div>
+				<div class="col-3 font-weight-bold">Selling Price</div>
 			</div>
-		{% endfor %}
+
+			<br>
+			{% for i in items %}
+
+				<div class="row">
+					<div class="col-3">
+						{{ i.name }}
+					</div>
+					<div class="col-3">
+						{{ i.item_name }}
+					</div>
+					<div class="col-3">
+						{{ i.selling_rate }}
+					</div>
+					<div class="col-3">
+						<button item-code={{ i.name }} class="btn btn-outline-dark">Add To Cart</button>
+					</div>
+				</div>
+
+			{% endfor %}
+
+		{% else %}
+
+			<b> Currently No Items to Sell! </b>
+
+		{% endif %}
 
 	</div>
 </div>
