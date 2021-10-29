@@ -46,4 +46,4 @@ class PaymentEntry(Document):
 		from re import sub
 		make_gl_entry(delete=True, voucher=sub(r"(-CANC-)\d+", "", self.name))
 
-		# TODO: cancel the linked sales/purchase invoice
+		# TODO: cancel the linked sales/purchase invoice - but we made the sale?
