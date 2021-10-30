@@ -56,7 +56,7 @@ function make_sale() {
         method: "accounting.accounting.doctype.sales_invoice.sales_invoice.make_sales_invoice",
         args: {
             "item_dict": cart,
-            "customer_name": document.getElementById("customername").value || ""
+            "customer_name": document.getElementById("customername").value || frappe.session.user
         },
         callback: (r) => {
             if (r.exc_type) {

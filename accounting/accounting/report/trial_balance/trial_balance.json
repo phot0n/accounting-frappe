@@ -15,7 +15,7 @@
  "name": "Trial Balance",
  "owner": "Administrator",
  "prepared_report": 0,
- "ref_doctype": "General Ledger",
+ "ref_doctype": "GL Entry",
  "report_name": "Trial Balance",
  "report_type": "Script Report",
  "roles": [

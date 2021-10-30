@@ -32,12 +32,14 @@
   {
    "fieldname": "posting_date",
    "fieldtype": "Date",
-   "label": "Posting Date"
+   "label": "Posting Date",
+   "reqd": 1
   },
   {
    "fieldname": "payment_due_date",
    "fieldtype": "Date",
-   "label": "Payment Due Date"
+   "label": "Payment Due Date",
+   "reqd": 1
   },
   {
    "fieldname": "credit_to",
@@ -104,7 +106,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2021-10-28 20:36:01.089488",
+ "modified": "2021-10-30 20:56:05.891619",
  "modified_by": "Administrator",
  "module": "Accounting",
  "name": "Purchase Invoice",

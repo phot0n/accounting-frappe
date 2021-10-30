@@ -21,7 +21,7 @@ class SalesInvoice(Document):
 		# check payment due date
 		if not self.payment_due_date:
 			# default is after 10 days
-			self.payment_due_date = (getdate(self.posting_date) + timedelta(days=10)).strftime("%Y-%m-%d")
+			self.payment_due_date = getdate(self.posting_date) + timedelta(days=10)
 		else:
 			if getdate(self.payment_due_date) < todays_date:
 				frappe.throw("Payment Due Date cannot be of past!")
@@ -60,9 +60,9 @@ def make_sales_invoice(item_dict: str, customer_name: str):
 		frappe.throw("Customer Name is required!")
 
 	customer_name = customer_name.strip().lower()
-	posting_date = getdate().strftime("%Y-%m-%d")
+	posting_date = getdate()
 
-	recievable, income = get_sales_invoice_accounts()
+	receivable, income = get_sales_invoice_accounts()
 
 	# checking if a customer exists or not
 	if not frappe.db.exists("Party", customer_name):
@@ -88,7 +88,7 @@ def make_sales_invoice(item_dict: str, customer_name: str):
 	frappe.get_doc({
 		"doctype": "Sales Invoice",
 		"customer": customer_name,
-		"debit_to": recievable,
+		"debit_to": receivable,
 		"income_account": income,
 		"posting_date": posting_date,
 		"fiscal_year": get_fiscal_year_from_posting_date(posting_date),
@@ -109,16 +109,16 @@ def get_fiscal_year_from_posting_date(posting_date):
 
 
 def get_sales_invoice_accounts():
-	recievable_account = frappe.get_all("Account", filters={
-		"parent_account": "Recievable", "is_group": 0
+	receivable_account = frappe.get_all("Account", filters={
+		"parent_account": "Receivable", "is_group": 0
 	})
 	income_account = frappe.get_all("Account", filters={
 		"parent_account": "Income", "is_group": 0
 	})
 
-	if not recievable_account or not income_account:
-		frappe.throw("Currently no Recievable(Asset)/Income child account(s) exist in the account tree!")
+	if not receivable_account or not income_account:
+		frappe.throw("Currently no Receivable(Asset)/Income child account(s) exist in the account tree!")
 
 	# NOTE: take any child and use it for the sales invoice - this is not a good idea
 	# to use generally but in this case it works :P
-	return recievable_account[0]["name"], income_account[0]["name"]
+	return receivable_account[0]["name"], income_account[0]["name"]

@@ -17,7 +17,7 @@ frappe.ui.form.on("Sales Invoice", {
 		});
 		frm.set_query("debit_to", {
 			"filters": [
-				["Account", "parent_account", "=", "Recievable"],
+				["Account", "parent_account", "=", "Receivable"],
 				["Account", "is_group", "=", "0"],
 			]
 		});

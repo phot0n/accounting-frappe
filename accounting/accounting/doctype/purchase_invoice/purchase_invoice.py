@@ -19,12 +19,8 @@ class PurchaseInvoice(Document):
 			frappe.throw("Posting Date cannot be of future!")
 
 		# check payment due date
-		if not self.payment_due_date:
-			# default is after 10 days
-			self.payment_due_date = (getdate(self.posting_date) + timedelta(days=10)).strftime("%Y-%m-%d")
-		else:
-			if getdate(self.payment_due_date) < todays_date:
-				frappe.throw("Payment Due Date cannot be of past!")
+		if getdate(self.payment_due_date) < todays_date:
+			frappe.throw("Payment Due Date cannot be of past!")
 
 		# set the total amount as well as individual amts of the items
 		self.total_amount = 0
