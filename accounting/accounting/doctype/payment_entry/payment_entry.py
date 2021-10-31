@@ -38,7 +38,8 @@ class PaymentEntry(Document):
 			voucher=self.name
 		)
 
-		# TODO: change the status of sales/purchase invoice
+		# change the status of sales/purchase invoice
+		frappe.db.update(self.voucher_type, self.voucher, "payment_status", "Paid")
 
 
 	def on_cancel(self):
@@ -46,4 +47,11 @@ class PaymentEntry(Document):
 		from re import sub
 		make_gl_entry(delete=True, voucher=sub(r"(-CANC-)\d+", "", self.name))
 
-		# TODO: change the status of linked sales/purchase invoice
+		# change the status of linked sales/purchase invoice
+		if getdate() > getdate(
+			frappe.db.get_value(self.voucher_type, self.voucher, "payment_due_date")
+		):
+			status = "Overdue"
+		else:
+			status = "Unpaid"
+		frappe.db.update(self.voucher_type, self.voucher, "payment_status", status)

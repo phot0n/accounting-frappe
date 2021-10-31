@@ -24,18 +24,20 @@ frappe.ui.form.on("Sales Invoice", {
 	},
 	refresh(frm) {
 		if (frm.doc.docstatus === 1) {
-			frm.add_custom_button("Create Payment Entry", () => {
-				frappe.new_doc("Payment Entry", {
-					amount: frm.doc.total_amount,
-					party: frm.doc.customer,
-					party_type: "Customer",
-					payment_type: "Receive",
-					fiscal_year: frm.doc.fiscal_year,
-					paid_from: frm.doc.debit_to,
-					voucher_type: "Sales Invoice",
-					voucher: frm.doc.name
+			if (frm.doc.payment_status !== "Paid") {
+				frm.add_custom_button("Create Payment Entry", () => {
+					frappe.new_doc("Payment Entry", {
+						amount: frm.doc.total_amount,
+						party: frm.doc.customer,
+						party_type: "Customer",
+						payment_type: "Receive",
+						fiscal_year: frm.doc.fiscal_year,
+						paid_from: frm.doc.debit_to,
+						voucher_type: "Sales Invoice",
+						voucher: frm.doc.name
+					});
 				});
-			});
+			}
 			frm.add_custom_button("View GL Entries", () => {
 				// view the gl entry
 				frappe.set_route("List", "GL Entry", {"voucher": frm.doc.name});

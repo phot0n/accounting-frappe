@@ -102,7 +102,7 @@ def get_fiscal_year_from_posting_date(posting_date):
 		}
 	)
 	if not fiscal_yr:
-		frappe.throw("A fiscal Year for this financial year does not exist yet!")
+		frappe.throw("Fiscal Year for this financial year does not exist yet!")
 
 	# NOTE: generally we won't get multiple hits but if we do we can just take the first one
 	return fiscal_yr[0]["name"]
