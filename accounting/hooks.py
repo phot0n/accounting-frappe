@@ -109,23 +109,11 @@ app_license = "MIT"
 # Scheduled Tasks
 # ---------------
 
-# scheduler_events = {
-# 	"all": [
-# 		"accounting.tasks.all"
-# 	],
-# 	"daily": [
-# 		"accounting.tasks.daily"
-# 	],
-# 	"hourly": [
-# 		"accounting.tasks.hourly"
-# 	],
-# 	"weekly": [
-# 		"accounting.tasks.weekly"
-# 	],
-# 	"monthly": [
-# 		"accounting.tasks.monthly"
-# 	],
-# }
+scheduler_events = {
+	"daily": [
+		"accounting.accounting.helpers.check_payment_status_for_invoices"
+	],
+}
 
 # Testing
 # -------

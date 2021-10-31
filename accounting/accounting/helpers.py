@@ -2,27 +2,36 @@ import frappe
 from frappe.utils import getdate
 
 
-def check_payment_for_invoice(invoice_type, invoice):
-    # use this only for unpaid and overdue invoices
-    # TODO: this is an incomplete implementation
+def check_payment_status_for_invoices():
+    # for checking unpaid invoices, if they're overdue
 
-    payment_entry = frappe.get_all(
-        "Payment Entry",
-        filters={
-            "voucher_type": invoice_type,
-            "voucher": invoice,
-            "docstatus": 1
-        }
+    doctypes = ("Sales Invoice", "Purchase Invoice")
+    fields=["name", "payment_due_date"]
+    filters={
+        "docstatus": 1,
+        "payment_status": ["=", "Unpaid"]
+    }
+    todays_date = getdate()
+    to_be_update_status = "Overdue"
+
+    sales_invoices = frappe.get_all(
+        doctypes[0],
+        fields=fields,
+        filters=filters
     )
+    for si in sales_invoices:
+        if todays_date > getdate(
+                si.get(fields[1])
+            ):
+            frappe.db.update(doctypes[0], si.get(fields[0]), "payment_status", to_be_update_status)
 
-    if payment_entry:
-        return "Paid"
-
-    if getdate() > \
-        getdate(
-            frappe.get_value(
-                invoice_type, invoice, "payment_due_date"
-            )
-        ):
-        return "Overdue"
-    return "Unpaid"
+    purchase_invoices = frappe.get_all(
+        doctypes[1],
+        fields=fields,
+        filters=filters
+    )
+    for pi in purchase_invoices:
+        if todays_date > getdate(
+                pi.get(fields[1])
+            ):
+            frappe.db.update(doctypes[1], pi.get(fields[0]), "payment_status", to_be_update_status)
