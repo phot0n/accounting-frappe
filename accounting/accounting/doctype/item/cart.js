@@ -45,6 +45,19 @@ show_cart.addEventListener("click", () => {
     }
 });
 
+let download_invoice = document.querySelector("button.btn-outline-info");
+download_invoice.addEventListener("click", () => {
+    frappe.msgprint({
+        title: __('Download Invoice'),
+        message: __(`
+            Invoice Name: <input type="text" class="form-control" id="invoicename">
+            <br>
+            <button onclick="invoice_download()" class="btn btn-dark float-right">Download</button>
+        `)
+    });
+});
+
+
 function make_sale() {
     if (cart.length === 0) {
         frappe.msgprint(__("No Items in Cart!"));
@@ -70,6 +83,8 @@ function make_sale() {
                     indicator:'green'
                 }, 5);
 
+                frappe.msgprint(__(`Your invoice is <b>${r.message}</b>.
+                    You can use this to download Invoice`))
                 clear_cart();
             }
         },
@@ -84,4 +99,22 @@ function clear_cart() {
         message:__('Cart Cleared!'),
         indicator:'green'
     }, 5);
+}
+
+function invoice_download() {
+    let invoice_name = document.getElementById("invoicename").value.trim()
+    if (!invoice_name) {
+        frappe.show_alert({
+            message:__('Invoice Name is Required!'),
+            indicator:'red'
+        });
+        return;
+    }
+
+    let w = window.open(
+        `/api/method/frappe.utils.print_format.download_pdf?doctype=${encodeURIComponent('Sales Invoice')}&name=${encodeURIComponent(invoice_name)}`
+    );
+    if (!w) {
+        frappe.show_alert(__("Please enable pop-ups"));
+    }
 }

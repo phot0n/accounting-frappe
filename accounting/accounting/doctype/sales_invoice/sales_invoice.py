@@ -85,7 +85,7 @@ def make_sales_invoice(item_dict: str, customer_name: str):
 			"quantity": v
 		})
 
-	frappe.get_doc({
+	inv = frappe.get_doc({
 		"doctype": "Sales Invoice",
 		"customer": customer_name,
 		"debit_to": receivable,
@@ -93,7 +93,10 @@ def make_sales_invoice(item_dict: str, customer_name: str):
 		"posting_date": posting_date,
 		"fiscal_year": get_fiscal_year_from_posting_date(posting_date),
 		"items": list_of_items
-	}).insert(ignore_permissions=True).submit()
+	}).insert(ignore_permissions=True)
+	inv.submit()
+
+	return inv.name
 
 
 def get_fiscal_year_from_posting_date(posting_date):

@@ -5,6 +5,7 @@
 
 <div>
 	<button class="btn btn-dark float-right">Show Cart</button>
+	<button class="btn btn-outline-info float-right">Download Invoice</button>
 	<br>
 
 	{% set items = frappe.get_list("Item", fields=['name', 'item_name', 'selling_rate'], filters={'show_in_website': 1}) %}
