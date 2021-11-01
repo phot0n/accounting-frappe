@@ -9,7 +9,7 @@ frappe.ui.form.on('Payment Entry', {
 		if (frm.doc.docstatus === 1) {
 			frm.add_custom_button("View GL Entry", () => {
 				// view the gl entry
-				frappe.set_route("List", "General Ledger", {"voucher": frm.doc.name});
+				frappe.set_route("List", "GL Entry", {"voucher": frm.doc.name});
 			});
 		}
 	},

@@ -1,4 +1,4 @@
-color_map = {
+let color_map = {
     "Paid": "green",
     "Unpaid": "yellow",
     "Overdue": "red"
