@@ -43,6 +43,8 @@ def get_data():
 	)
 	child_accounts = frappe.get_list("Account", fields=["name", "parent_account"], filters={"is_group": 0})
 
+	total_debit = total_credit = 0
+
 	accounts = deque()
 	for r in root_accounts:
 		r["indent"] = 0
@@ -69,6 +71,9 @@ def get_data():
 							r["debit_amt"] += entry["debit_amt"]
 							r["credit_amt"] += entry["credit_amt"]
 
+							total_debit += entry["debit_amt"]
+							total_credit += entry["credit_amt"]
+
 						accounts.appendleft(c)
 
 				accounts.appendleft(m)
@@ -91,9 +96,20 @@ def get_data():
 					r["debit_amt"] += entry["debit_amt"]
 					r["credit_amt"] += entry["credit_amt"]
 
+					total_debit += entry["debit_amt"]
+					total_credit += entry["credit_amt"]
+
 				accounts.appendleft(dc)
 
 		accounts.appendleft(r)
+
+	accounts.append({
+		"name": "TOTAL AMOUNT(S)",
+		"indent": 0,
+		"debit_amt": total_debit,
+		"credit_amt": total_credit
+
+	})
 
 	return accounts
 
