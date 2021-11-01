@@ -115,7 +115,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2021-10-31 21:17:33.184894",
+ "modified": "2021-11-02 00:25:59.988953",
  "modified_by": "Administrator",
  "module": "Accounting",
  "name": "Purchase Invoice",
@@ -136,5 +136,6 @@
   }
  ],
  "sort_field": "modified",
- "sort_order": "DESC"
+ "sort_order": "DESC",
+ "title_field": "supplier"
 }

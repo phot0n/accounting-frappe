@@ -43,7 +43,7 @@ def get_colms():
 
 
 def get_data():
-	# FIXME: this is a bad/naive implementation - figure out a better way
+	# FIXME: this is a bad/naive implementation - figure out a better way (recursion)
 
 	root_accounts = frappe.get_list("Account", filters={"parent_account": ""}, fields=["name", "opening_balance"])
 	mid_parent_accounts = frappe.get_list(
