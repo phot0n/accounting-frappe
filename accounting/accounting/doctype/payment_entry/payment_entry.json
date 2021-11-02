@@ -101,21 +101,21 @@
   },
   {
    "fieldname": "voucher_type",
-   "fieldtype": "Data",
+   "fieldtype": "Link",
    "label": "Voucher Type",
-   "read_only": 1
+   "options": "DocType"
   },
   {
    "fieldname": "voucher",
-   "fieldtype": "Data",
+   "fieldtype": "Dynamic Link",
    "label": "Voucher",
-   "read_only": 1
+   "options": "voucher_type"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2021-11-01 12:46:49.680875",
+ "modified": "2021-11-02 17:23:38.635775",
  "modified_by": "Administrator",
  "module": "Accounting",
  "name": "Payment Entry",

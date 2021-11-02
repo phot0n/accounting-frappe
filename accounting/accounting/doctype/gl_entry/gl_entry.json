@@ -76,15 +76,16 @@
   },
   {
    "fieldname": "voucher_type",
-   "fieldtype": "Select",
+   "fieldtype": "Link",
    "label": "Voucher Type",
-   "options": "Sales Invoice\nPurchase Invoice\nPayment Entry",
+   "options": "DocType",
    "reqd": 1
   },
   {
    "fieldname": "voucher",
-   "fieldtype": "Data",
+   "fieldtype": "Dynamic Link",
    "label": "Voucher",
+   "options": "voucher_type",
    "reqd": 1
   },
   {
@@ -108,7 +109,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2021-10-28 23:54:01.101474",
+ "modified": "2021-11-02 17:26:54.806640",
  "modified_by": "Administrator",
  "module": "Accounting",
  "name": "GL Entry",

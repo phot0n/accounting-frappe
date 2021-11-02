@@ -6,13 +6,13 @@ frappe.query_reports["Trial Balance"] = {
 	"filters": [
 		{
             "fieldname": "from_date",
-            "label": __("From Date"),
-            "fieldtype": "Date",
+            "label": __("From Date (default: Start of fiscal year"),
+            "fieldtype": "Date"
         },
         {
             "fieldname": "to_date",
-            "label": __("To Date"),
-            "fieldtype": "Date",
+            "label": __("To Date (default: today)"),
+            "fieldtype": "Date"
         }
 	]
 };

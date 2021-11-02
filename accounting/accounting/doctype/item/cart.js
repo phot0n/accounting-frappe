@@ -103,6 +103,7 @@ function clear_cart() {
 
 function invoice_download() {
     let invoice_name = document.getElementById("invoicename").value.trim()
+    let doctype = "Sales Invoice"
     if (!invoice_name) {
         frappe.show_alert({
             message:__('Invoice Name is Required!'),
@@ -112,7 +113,7 @@ function invoice_download() {
     }
 
     let w = window.open(
-        `/api/method/frappe.utils.print_format.download_pdf?doctype=${encodeURIComponent('Sales Invoice')}&name=${encodeURIComponent(invoice_name)}`
+        `/api/method/frappe.utils.print_format.download_pdf?doctype=${encodeURIComponent(doctype)}&name=${encodeURIComponent(invoice_name)}`
     );
     if (!w) {
         frappe.show_alert(__("Please enable pop-ups"));

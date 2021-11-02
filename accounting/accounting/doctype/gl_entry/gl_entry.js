@@ -8,5 +8,10 @@ frappe.ui.form.on('GL Entry', {
 				["Account", "is_group", "=", "0"],
 			]
 		});
+		frm.set_query("voucher_type", {
+			"filters": [
+				["DocType", "name", "in", ["Sales Invoice", "Purchase invoice"]],
+			]
+		});
 	},
 });

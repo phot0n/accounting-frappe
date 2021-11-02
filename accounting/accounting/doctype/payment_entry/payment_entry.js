@@ -4,6 +4,11 @@
 frappe.ui.form.on('Payment Entry', {
 	onload(frm) {
 		frm.trigger("payment_type");
+		frm.set_query("voucher_type", {
+			"filters": [
+				["DocType", "name", "in", ["Sales Invoice", "Purchase invoice"]],
+			]
+		});
 	},
 	refresh(frm) {
 		if (frm.doc.docstatus === 1) {

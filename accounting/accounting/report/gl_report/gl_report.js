@@ -4,14 +4,27 @@ frappe.query_reports["GL Report"] = {
             "fieldname":"voucher",
             "label": __("Voucher"),
             "fieldtype": "Dynamic Link",
-            "options": "voucher_type"
+            "options": "voucher_type",
+            "get_query": function() {
+                return {
+                    "filters": [
+                        ["docstatus", "not in", ["0", "2"]],
+                    ]
+                }
+            }
         },
         {
             "fieldname":"voucher_type",
             "label": __("Voucher Type"),
             "fieldtype": "Link",
             "options": "DocType",
-            "default": "Sales Invoice"
+            "get_query": function() {
+                return {
+                    "filters": [
+                        ["DocType", "name", "in", ["Sales Invoice", "Purchase invoice", "Payment Entry"]],
+                    ]
+                }
+            }
         },
         {
             "fieldname":"fiscal_year",
