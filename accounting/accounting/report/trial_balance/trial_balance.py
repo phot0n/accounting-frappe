@@ -2,23 +2,23 @@
 # License: MIT. See LICENSE
 
 import frappe
+from frappe.utils import getdate
 from collections import deque
 
 
 def execute(filters=None):
-	return get_colms(), get_data()
+	return get_colms(), get_data(filters)
 
 
 def get_colms():
-	# fields: account, total_credit_amt, total_debit_amt
 	return [
 		{
 			'fieldname': 'name',
-            'label': 'Account',
-            'fieldtype': 'Link',
-            'options': 'Account',
+        	'label': 'Account',
+        	'fieldtype': 'Link',
+        	'options': 'Account',
 			"width": 200
-        },
+    	},
 		{
             'fieldname': 'opening_balance',
             'label': 'Opening Balance',
@@ -42,16 +42,14 @@ def get_colms():
 	]
 
 
-def get_data():
-	# FIXME: this is a bad/naive implementation - figure out a better way (recursion)
+def get_data(filters):
+	# FIXME: this is a bad/naive and flawed implementation - figure out a better way (recursion)
 
-	root_accounts = frappe.get_list("Account", filters={"parent_account": ""}, fields=["name", "opening_balance"])
-	mid_parent_accounts = frappe.get_list(
-		"Account",
-		fields=["name", "parent_account", "account_type", "opening_balance"],
-		filters={"parent_account": ["!=", ""], "is_group": 1}
-	)
-	child_accounts = frappe.get_list("Account", fields=["name", "parent_account", "account_type", "opening_balance"], filters={"is_group": 0})
+	root_accounts, mid_parent_accounts, child_accounts = get_accounts()
+
+	start_date_of_fiscal_yr = ""
+	if not filters:
+		start_date_of_fiscal_yr = get_start_date_of_fiscal_yr()
 
 	total_debit = total_credit = 0
 	debit_accounts = ["Asset", "Expense"]
@@ -74,7 +72,20 @@ def get_data():
 						c["debit_amt"] = c["credit_amt"] = 0
 						c["current_balance"] = c["opening_balance"]
 
-						gl_entries = frappe.get_list("GL Entry", filters={"account": c["name"]}, fields=["debit_amt", "credit_amt"])
+						gl_entries = frappe.get_all(
+							"GL Entry",
+							filters={
+								"account": c["name"],
+								"posting_date": [
+									"between",
+									[
+										filters.get("from_date", start_date_of_fiscal_yr),
+										filters.get("to_date", "")
+									]
+								]
+							},
+							fields=["debit_amt", "credit_amt"]
+						)
 						for entry in gl_entries:
 							c["debit_amt"] += entry["debit_amt"]
 							c["credit_amt"] += entry["credit_amt"]
@@ -114,7 +125,20 @@ def get_data():
 				dc["debit_amt"] = dc["credit_amt"] = 0
 				dc["current_balance"] = dc["opening_balance"]
 
-				gl_entries = frappe.get_list("GL Entry", filters={"account": dc["name"]}, fields=["debit_amt", "credit_amt"])
+				gl_entries = frappe.get_all(
+					"GL Entry",
+					filters={
+						"account": dc["name"],
+						"posting_date": [
+							"between",
+							[
+								filters.get("from_date", start_date_of_fiscal_yr),
+								filters.get("to_date", "")
+							]
+						]
+					},
+					fields=["debit_amt", "credit_amt"]
+				)
 				for entry in gl_entries:
 					dc["debit_amt"] += entry["debit_amt"]
 					dc["credit_amt"] += entry["credit_amt"]
@@ -147,3 +171,39 @@ def get_data():
 	})
 
 	return accounts
+
+
+def get_accounts():
+	root_accounts = frappe.get_list(
+		"Account",
+		filters={"parent_account": ""},
+		fields=["name", "opening_balance"]
+	)
+	mid_parent_accounts = frappe.get_list(
+		"Account",
+		fields=["name", "parent_account", "account_type", "opening_balance"],
+		filters={"parent_account": ["!=", ""], "is_group": 1}
+	)
+	child_accounts = frappe.get_list(
+		"Account",
+		fields=["name", "parent_account", "account_type", "opening_balance"],
+		filters={"is_group": 0}
+	)
+
+	return root_accounts, mid_parent_accounts, child_accounts
+
+
+def get_start_date_of_fiscal_yr():
+	todays_date = getdate()
+	fiscal_yr = frappe.get_all(
+		"Fiscal Year",
+		filters={
+			"start_date": ["<=", todays_date],
+			"end_date": [">", todays_date]
+		},
+		fields=["start_date"]
+	)
+	if not fiscal_yr:
+		frappe.throw("Fiscal Year not available for this financial year")
+
+	return fiscal_yr[0]["start_date"]
