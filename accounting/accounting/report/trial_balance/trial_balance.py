@@ -3,11 +3,14 @@
 
 import frappe
 from frappe.utils import getdate
+from frappe import _
+
 from collections import deque
 
 
 def execute(filters=None):
-	return get_colms(), get_data(filters)
+	data, summary_data = get_data(filters)
+	return get_colms(), data, None, None, get_report_summary(summary_data)
 
 
 def get_colms():
@@ -42,9 +45,10 @@ def get_colms():
 	]
 
 
-def get_data(filters):
+def get_data(filters, prefix=""):
 	# FIXME: this is a bad/naive and flawed implementation - figure out a better way (recursion)
 
+	relative_profit = relative_income = relative_expense = 0
 	root_accounts, mid_parent_accounts, child_accounts = get_accounts()
 
 	start_date_of_fiscal_yr = ""
@@ -52,7 +56,7 @@ def get_data(filters):
 		start_date_of_fiscal_yr = get_start_date_of_fiscal_yr()
 
 	total_debit = total_credit = 0
-	debit_accounts = ["Asset", "Expense"]
+	debit_accounts = [f"{prefix}Asset", f"{prefix}Expense"]
 
 	accounts = deque()
 	for r in root_accounts:
@@ -157,8 +161,15 @@ def get_data(filters):
 
 		if r["name"] in debit_accounts:
 			r["current_balance"] += (r["debit_amt"] - r["credit_amt"])
+			if r["name"] == f"{prefix}Expense":
+				relative_profit -= r["current_balance"]
+				relative_expense += r["current_balance"]
 		else:
 			r["current_balance"] += (r["credit_amt"] - r["debit_amt"])
+			if r["name"] == f"{prefix}Income":
+				relative_profit += r["current_balance"]
+				relative_income += r["current_balance"]
+
 
 		total_debit += r["debit_amt"]
 		total_credit += r["credit_amt"]
@@ -170,7 +181,31 @@ def get_data(filters):
 		"credit_amt": total_credit
 	})
 
-	return accounts
+	return accounts, {"p": relative_profit, "i": relative_income, "e": relative_expense}
+
+
+def get_report_summary(data):
+	return [
+		{
+        	"value": data["i"],
+        	"label": _("Relative Income"),
+        	"datatype": "Currency",
+        	"currency": "INR"
+		},
+		{
+        	"value": data["e"],
+        	"label": _("Relative Expense"),
+        	"datatype": "Currency",
+        	"currency": "INR"
+		},
+		{
+        	"value": data["p"],
+        	"indicator": "Green" if data["p"] > 0 else "Red",
+        	"label": _("Relative Profit"),
+        	"datatype": "Currency",
+        	"currency": "INR"
+		}
+	]
 
 
 def get_accounts():
