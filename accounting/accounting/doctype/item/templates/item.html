@@ -1,0 +1,20 @@
+{%  extends "templates/web.html" %}
+
+{% block page_content %}
+<div class="py-20 row">
+    <div class="col-sm-2">
+        <img src="{{ image }}" alt="{{ title }}">
+    </div>
+    <div class="col">
+        <h1>{{ title }}</h1>
+        <p>{{ description or "" }}</p>
+    </div>
+</div>
+<button item-code={{ title }} class="btn btn-outline-dark float-right">Add To Cart</button>
+{% endblock %}
+
+{% block script %}
+<script>
+    {% include "accounting/accounting/doctype/item/cart.js" %}
+</script>
+{% endblock %}

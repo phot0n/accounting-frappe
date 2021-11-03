@@ -8,6 +8,6 @@ frappe.ui.form.on('Item', {
 
 	// ref: https://github.com/frappe/frappe/wiki/Developer-Cheatsheet#1-to-add-a-new-handler-on-value-change
 	show_in_website(frm) {
-		frm.toggle_display(['route'], frm.doc.show_in_website === 1);
+		frm.toggle_display(['route', 'image', 'description'], frm.doc.show_in_website === 1);
 	}
 });

@@ -14,7 +14,9 @@
   "selling_rate",
   "default_unit",
   "section_break_7",
-  "route"
+  "route",
+  "image",
+  "description"
  ],
  "fields": [
   {
@@ -64,12 +66,22 @@
   {
    "fieldname": "section_break_7",
    "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "image",
+   "fieldtype": "Attach Image",
+   "label": "Image"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Long Text",
+   "label": "Description"
   }
  ],
  "has_web_view": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2021-10-28 23:19:10.837670",
+ "modified": "2021-11-03 20:58:53.932038",
  "modified_by": "Administrator",
  "module": "Accounting",
  "name": "Item",

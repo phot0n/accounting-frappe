@@ -8,7 +8,7 @@
 	<button class="btn btn-outline-info float-right">Download Invoice</button>
 	<br>
 
-	{% set items = frappe.get_list("Item", fields=['name', 'item_name', 'selling_rate'], filters={'show_in_website': 1}) %}
+	{% set items = frappe.get_list("Item", fields=['name', 'item_name', 'selling_rate', 'route'], filters={'show_in_website': 1}) %}
 	<h2>Shop</h2>
 	<br>
 	<div class="container">
@@ -25,7 +25,7 @@
 
 				<div class="row">
 					<div class="col-3">
-						{{ i.name }}
+						<a href="{{ i.route }}">{{ i.name }}</a>
 					</div>
 					<div class="col-3">
 						{{ i.item_name }}
