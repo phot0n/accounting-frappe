@@ -113,7 +113,9 @@ function invoice_download() {
     }
 
     let w = window.open(
-        `/api/method/frappe.utils.print_format.download_pdf?doctype=${encodeURIComponent(doctype)}&name=${encodeURIComponent(invoice_name)}`
+        `/api/method/frappe.utils.print_format.download_pdf`+
+        `?doctype=${encodeURIComponent(doctype)}`+
+        `&name=${encodeURIComponent(invoice_name)}`
     );
     if (!w) {
         frappe.show_alert(__("Please enable pop-ups"));

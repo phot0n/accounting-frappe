@@ -48,7 +48,7 @@ def get_colms():
 def get_data(filters, prefix=""):
 	# FIXME: this is a bad/naive and flawed implementation - figure out a better way (recursion)
 
-	relative_profit = relative_income = relative_expense = 0
+	relative_income = relative_expense = 0
 	root_accounts, mid_parent_accounts, child_accounts = get_accounts()
 
 	start_date_of_fiscal_yr = ""
@@ -162,12 +162,10 @@ def get_data(filters, prefix=""):
 		if r["name"] in debit_accounts:
 			r["current_balance"] += (r["debit_amt"] - r["credit_amt"])
 			if r["name"] == f"{prefix}Expense":
-				relative_profit -= r["current_balance"]
 				relative_expense += r["current_balance"]
 		else:
 			r["current_balance"] += (r["credit_amt"] - r["debit_amt"])
 			if r["name"] == f"{prefix}Income":
-				relative_profit += r["current_balance"]
 				relative_income += r["current_balance"]
 
 
@@ -181,7 +179,11 @@ def get_data(filters, prefix=""):
 		"credit_amt": total_credit
 	})
 
-	return accounts, {"p": relative_profit, "i": relative_income, "e": relative_expense}
+	return accounts, {
+			"p": relative_income - relative_expense,
+			"i": relative_income,
+			"e": relative_expense
+		}
 
 
 def get_report_summary(data):
