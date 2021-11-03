@@ -1,3 +1,6 @@
+// NOTE: if we want our cart to be available across devices for the user,
+// just add it to a table (doctype)
+
 let cart = window.sessionStorage;
 let sessionStorageProps = ["length", "clear", "getItem", "key", "removeItem", "setItem"];
 
