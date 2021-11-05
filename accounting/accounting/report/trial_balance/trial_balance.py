@@ -8,8 +8,8 @@ from frappe import _
 from collections import deque
 
 
-def execute(filters=None):
-	data, summary_data = get_data(filters)
+def execute(filters=None, prefix=""):
+	data, summary_data = get_data(filters, prefix)
 	return get_colms(), data, None, None, get_report_summary(summary_data)
 
 
@@ -45,7 +45,7 @@ def get_colms():
 	]
 
 
-def get_data(filters, prefix=""):
+def get_data(filters, prefix):
 	# FIXME: this is a bad/naive and flawed implementation - figure out a better way (recursion)
 
 	relative_income = relative_expense = 0
@@ -231,16 +231,11 @@ def get_accounts():
 
 
 def get_start_date_of_fiscal_yr():
-	todays_date = getdate()
-	fiscal_yr = frappe.get_all(
-		"Fiscal Year",
-		filters={
-			"start_date": ["<=", todays_date],
-			"end_date": [">", todays_date]
-		},
-		fields=["start_date"]
+	from accounting.accounting.doctype.fiscal_year.fiscal_year import get_fiscal_yr_from_date
+	field = "start_date"
+	fiscal_yr = get_fiscal_yr_from_date(
+		getdate(),
+		additional_fields=[field]
 	)
-	if not fiscal_yr:
-		frappe.throw("Fiscal Year not available for this financial year")
 
-	return fiscal_yr[0]["start_date"]
+	return fiscal_yr[field]

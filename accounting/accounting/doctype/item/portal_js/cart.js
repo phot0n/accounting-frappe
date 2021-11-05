@@ -36,7 +36,7 @@ show_cart.addEventListener("click", () => {
             title: __('Cart'),
             message: __(`${cart_data}
                 <br>
-                Customer Name: <input type="text" class="form-control" id="customername">
+                <input type="text" class="form-control" id="customername" placeholder="(Optional) Enter Customer Name">
                 <br>
                 <button onclick="make_sale()" class="btn btn-dark float-right">Order</button>
                 <button onclick="clear_cart()" class="btn btn-dark float-left">Clear Cart</button>
@@ -53,7 +53,7 @@ download_invoice.addEventListener("click", () => {
     frappe.msgprint({
         title: __('Download Invoice'),
         message: __(`
-            Invoice Name: <input type="text" class="form-control" id="invoicename">
+            <input type="text" class="form-control" id="invoicename" placeholder="Please Enter Invoice Name">
             <br>
             <button onclick="invoice_download()" class="btn btn-dark float-right">Download</button>
         `)

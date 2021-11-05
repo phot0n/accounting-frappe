@@ -38,6 +38,7 @@ def make_gl_entry(delete=False, **kwargs):
 			frappe.db.sql(
 				f"DELETE FROM `tabGL Entry` WHERE voucher = \"{kwargs.get('voucher')}\""
 			)
+			frappe.db.commit()
 			return
 		else:
 			frappe.throw("Please provide the voucher for the\

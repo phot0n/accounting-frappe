@@ -7,6 +7,7 @@ from frappe.utils.data import flt
 from frappe.utils import getdate
 
 from accounting.accounting.doctype.gl_entry.gl_entry import make_gl_entry
+from accounting.accounting.doctype.fiscal_year.fiscal_year import get_fiscal_yr_from_date
 from datetime import timedelta
 
 
@@ -55,14 +56,14 @@ class SalesInvoice(Document):
 
 
 @frappe.whitelist()
-def make_sales_invoice(item_dict: str, customer_name: str):
+def make_sales_invoice(item_dict, customer_name: str, prefix=""):
 	if not customer_name:
 		frappe.throw("Customer Name is required!")
 
 	customer_name = customer_name.strip().lower()
 	posting_date = getdate()
 
-	receivable, income = get_sales_invoice_accounts()
+	receivable, income = get_sales_invoice_accounts(prefix)
 
 	# checking if a customer exists or not
 	if not frappe.db.exists("Party", customer_name):
@@ -73,10 +74,10 @@ def make_sales_invoice(item_dict: str, customer_name: str):
 			"party_name": customer_name,
 		}).insert(ignore_permissions=True)
 
-
-	# parsing string-ed dictionary
-	from json import loads
-	item_dict = loads(item_dict)
+	if isinstance(item_dict, str):
+		# parsing string-ed dictionary
+		from json import loads
+		item_dict = loads(item_dict)
 
 	list_of_items = []
 	for k,v in item_dict.items():
@@ -91,32 +92,22 @@ def make_sales_invoice(item_dict: str, customer_name: str):
 		"debit_to": receivable,
 		"income_account": income,
 		"posting_date": posting_date,
-		"fiscal_year": get_fiscal_year_from_posting_date(posting_date),
+		"fiscal_year": get_fiscal_yr_from_date(posting_date).get("name"),
 		"items": list_of_items
 	}).insert(ignore_permissions=True)
 	inv.submit()
 
+	frappe.db.commit()
+
 	return inv.name
 
 
-def get_fiscal_year_from_posting_date(posting_date):
-	fiscal_yr = frappe.get_all("Fiscal Year", filters={
-			"end_date": [">=", posting_date], "start_date": ["<", posting_date]
-		}
-	)
-	if not fiscal_yr:
-		frappe.throw("Fiscal Year for this financial year does not exist yet!")
-
-	# NOTE: generally we won't get multiple hits but if we do we can just take the first one
-	return fiscal_yr[0]["name"]
-
-
-def get_sales_invoice_accounts():
+def get_sales_invoice_accounts(prefix):
 	receivable_account = frappe.get_all("Account", filters={
-		"parent_account": "Receivable", "is_group": 0
+		"parent_account": f"{prefix}Receivable", "is_group": 0
 	})
 	income_account = frappe.get_all("Account", filters={
-		"parent_account": "Income", "is_group": 0
+		"parent_account": f"{prefix}Income", "is_group": 0
 	})
 
 	if not receivable_account or not income_account:

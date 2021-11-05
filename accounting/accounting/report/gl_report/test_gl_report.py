@@ -1,22 +1,25 @@
-# Copyright (c) 2021, ritwik and Contributors
-# See license.txt
-
 import frappe
 import unittest
 from frappe.utils import getdate, add_to_date
-from frappe.utils.data import flt
 
 from accounting.accounting.doctype.account.account import create_accounts
 from accounting.accounting.doctype.fiscal_year.fiscal_year import get_fiscal_yr_from_date
 from accounting.accounting.doctype.item.test_item import make_test_item
 from accounting.accounting.doctype.party.test_party import make_test_party
 from accounting.accounting.doctype.sales_invoice.sales_invoice import make_sales_invoice
+from .gl_report import get_data
 
 
-class TestGLEntry(unittest.TestCase):
+class TestGLReport(unittest.TestCase):
 	def setUp(self):
 		self.doctype = "GL Entry"
-		self.prefix = "testglentry-"
+		docstring = self.shortDescription() # hacky way
+		self.skip_setup_and_teardown = False
+		if docstring and docstring == "skip":
+			self.skip_setup_and_teardown = True
+			return
+
+		self.prefix = "testglreport-"
 		self.sales_invoice_doctype = "Sales Invoice"
 		self.payment_entry_doctype = "Payment Entry"
 		self.purchase_invoice_doctype = "Purchase Invoice"
@@ -32,6 +35,9 @@ class TestGLEntry(unittest.TestCase):
 		self.create_entries()
 
 	def tearDown(self):
+		if self.skip_setup_and_teardown:
+			return
+
 		frappe.db.delete("Account", self.filters)
 		frappe.db.delete("Fiscal Year", self.filters)
 		frappe.db.delete("Item", self.filters)
@@ -77,8 +83,8 @@ class TestGLEntry(unittest.TestCase):
 		)
 
 	def create_entries(self):
-		self.create_purchase_invoice()
 		self.create_sales_invoice()
+		self.create_purchase_invoice()
 		self.create_payment_entries()
 
 	def create_sales_invoice(self):
@@ -134,59 +140,49 @@ class TestGLEntry(unittest.TestCase):
 		}).insert(ignore_permissions=True)
 		self.purchase_invoice.submit()
 
-	def test_gl_entry_accounts_and_amounts(self):
-		gl_entries = frappe.get_list(
-			self.doctype,
-			filters={
-				"voucher": [
-					"in", [
-						self.sales_invoice_name,
-						self.purchase_invoice.name,
-						self.payment_entry_for_purchase.name,
-						self.payment_entry_for_sales.name
-					]
-				]
-			},
-			fields=["voucher_type", "voucher", "debit_amt", "credit_amt", "account"]
+	def test_report_data_without_filter(self):
+		"""skip"""
+		report_data = get_data(None)
+		self.assertEqual(
+			len(report_data), len(frappe.get_list(self.doctype))
+		)
+
+	def test_report_data_with_relevant_filter(self):
+		self.assertEqual(
+			len(get_data({
+				"voucher": self.sales_invoice_name
+			})),
+			2
+		)
+		self.assertEqual(
+			len(get_data({
+				"voucher": self.purchase_invoice.name
+			})),
+			2
 		)
 
 		self.assertEqual(
-			len(gl_entries), 8
+			len(get_data({
+				"voucher": ["in", [self.payment_entry_for_purchase.name, self.payment_entry_for_sales.name]]
+			})),
+			4
 		)
 
-		for gle in gl_entries:
-			has_amt = "credit_amt"
-			not_amt = "debit_amt"
+	def test_report_data_with_mismatched_filter(self):
+		self.assertEqual(
+			len(get_data({
+				"voucher": self.sales_invoice_name,
+				"voucher_type": self.payment_entry_doctype
+			})),
+			0
+		)
 
-			if gle["voucher_type"] == self.sales_invoice_doctype:
-				accounts = [self.prefix + "Income Child 1", self.prefix + "Receivable Child 1"]
-				if gle["account"] == accounts[1]:
-					has_amt = "debit_amt"
-					not_amt = "credit_amt"
-			elif gle["voucher_type"] == self.purchase_invoice_doctype:
-				accounts = [self.prefix + "Expense Child 1", self.prefix + "Payable Child 1"]
-				if gle["account"] == accounts[0]:
-					has_amt = "debit_amt"
-					not_amt = "credit_amt"
-			else:
-				if gle["voucher"] == self.payment_entry_for_sales.name:
-					accounts = [self.prefix + "Bank Child 1", self.prefix + "Receivable Child 1"]
-					if gle["account"] == accounts[0]:
-						has_amt = "debit_amt"
-						not_amt = "credit_amt"
-				else:
-					accounts = [self.prefix + "Bank Child 1", self.prefix + "Payable Child 1"]
-					if gle["account"] == accounts[1]:
-						has_amt = "debit_amt"
-						not_amt = "credit_amt"
+		self.assertEqual(
+			len(get_data({
+				"voucher": self.sales_invoice_name,
+				"party_type": "Supplier"
+			})),
+			0
+		)
 
-			self.assertIn(
-				gle["account"], accounts
-			)
-
-			self.assertEqual(
-				gle[has_amt], self.item_quantity*self.item_rate
-			)
-			self.assertEqual(
-				gle[not_amt], flt(0)
-			)
+		# TODO: add more tests for purchase and payment entries linked gl entries

@@ -73,7 +73,7 @@
   },
   {
    "fieldname": "total_amount",
-   "fieldtype": "Data",
+   "fieldtype": "Currency",
    "label": "Total Amount",
    "read_only": 1
   },
@@ -115,7 +115,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2021-11-02 00:25:59.988953",
+ "modified": "2021-11-06 15:22:14.953550",
  "modified_by": "Administrator",
  "module": "Accounting",
  "name": "Purchase Invoice",

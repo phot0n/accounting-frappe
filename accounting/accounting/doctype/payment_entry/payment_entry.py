@@ -48,10 +48,9 @@ class PaymentEntry(Document):
 		make_gl_entry(delete=True, voucher=sub(r"(-CANC-)\d+", "", self.name))
 
 		# change the status of linked sales/purchase invoice
+		status = "Unpaid"
 		if getdate() > getdate(
 			frappe.db.get_value(self.voucher_type, self.voucher, "payment_due_date")
 		):
 			status = "Overdue"
-		else:
-			status = "Unpaid"
 		frappe.db.update(self.voucher_type, self.voucher, "payment_status", status)
