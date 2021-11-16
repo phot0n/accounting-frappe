@@ -2,9 +2,11 @@
 
 {% block page_content %}
 <div class="py-20 row">
-    <div class="col-sm-2">
-        <img src="{{ image }}" alt="{{ title }}">
-    </div>
+    {% if image %}
+        <div class="col-sm-2">
+            <img src="{{ image }}" alt="{{ title }}">
+        </div>
+    {% endif %}
     <div class="col">
         <h1>{{ title }}</h1>
         <p>{{ description or "" }}</p>
